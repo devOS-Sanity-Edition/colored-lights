@@ -5,9 +5,9 @@ import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -88,7 +88,7 @@ public final class BlockReferenceParser {
     private static Block parseBlock(String reference) {
         if (Identifier.isValid(reference)) {
             var blockId = new Identifier(reference);
-            return Registry.BLOCK.getOrEmpty(blockId).orElse(null);
+            return Registries.BLOCK.getOrEmpty(blockId).orElse(null);
         } else {
             throw new JsonSyntaxException("Malformed block identifier: " + reference);
         }

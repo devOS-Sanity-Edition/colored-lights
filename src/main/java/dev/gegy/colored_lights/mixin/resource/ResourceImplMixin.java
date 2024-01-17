@@ -1,24 +1,25 @@
 package dev.gegy.colored_lights.mixin.resource;
 
+import dev.gegy.colored_lights.resource.ResourceIdDuck;
 import dev.gegy.colored_lights.resource.ResourcePatchManager;
-import net.minecraft.resource.ResourceImpl;
+import net.minecraft.resource.InputSupplier;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.InputStream;
 
-@Mixin(ResourceImpl.class)
-public class ResourceImplMixin {
-    @Shadow @Final private Identifier id;
-    @Shadow @Final @Mutable private InputStream inputStream;
-
+@Mixin(Resource.class)
+public class ResourceImplMixin implements ResourceIdDuck {
+    @Shadow @Final @Mutable private InputSupplier<InputStream> inputSupplier;
+    @Shadow @Nullable private ResourceMetadata metadata;
+    @Shadow @Final private ResourcePack pack;
     @Unique
     private boolean colored_lights$patchedResource;
 
@@ -26,7 +27,21 @@ public class ResourceImplMixin {
     private void getInputStream(CallbackInfoReturnable<InputStream> ci) {
         if (!this.colored_lights$patchedResource) {
             this.colored_lights$patchedResource = true;
-            this.inputStream = ResourcePatchManager.INSTANCE.patch(this.id, this.inputStream);
+            var original = this.inputSupplier;
+            this.inputSupplier = () -> ResourcePatchManager.INSTANCE.patch(this.id, original.get());
         }
+    }
+
+    @Unique
+    private Identifier id;
+
+    @Override
+    public Identifier colored_lights$getId() {
+        return this.id;
+    }
+
+    @Override
+    public void colored_lights$setId(Identifier id) {
+        this.id = id;
     }
 }

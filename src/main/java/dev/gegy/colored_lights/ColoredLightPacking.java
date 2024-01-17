@@ -2,7 +2,7 @@ package dev.gegy.colored_lights;
 
 import dev.gegy.colored_lights.provider.BlockLightColors;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 public final class ColoredLightPacking {
     public static final int DEFAULT = 0;
@@ -46,7 +46,7 @@ public final class ColoredLightPacking {
         return pack(hue, saturation);
     }
 
-    public static Vec3f unpack(int packed) {
+    public static Vector3f unpack(int packed) {
         // we use a value of 0 to represent saturation=0, given hue is irrelevant here.
         if (packed == 0) {
             return BlockLightColors.WHITE;
@@ -63,7 +63,7 @@ public final class ColoredLightPacking {
         float py = Math.abs(MathHelper.fractionalPart(hue + 2.0F / 3.0F) * 6.0F - 3.0F);
         float pz = Math.abs(MathHelper.fractionalPart(hue + 1.0F / 3.0F) * 6.0F - 3.0F);
 
-        return new Vec3f(
+        return new Vector3f(
                 MathHelper.lerp(saturation, 1.0F, MathHelper.clamp(px - 1.0F, 0.0F, 1.0F)),
                 MathHelper.lerp(saturation, 1.0F, MathHelper.clamp(py - 1.0F, 0.0F, 1.0F)),
                 MathHelper.lerp(saturation, 1.0F, MathHelper.clamp(pz - 1.0F, 0.0F, 1.0F))

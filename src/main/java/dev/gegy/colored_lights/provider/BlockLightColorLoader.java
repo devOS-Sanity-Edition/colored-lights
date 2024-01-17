@@ -8,8 +8,8 @@ import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.profiler.Profiler;
+import org.joml.Vector3f;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -65,7 +65,7 @@ public final class BlockLightColorLoader implements SimpleResourceReloadListener
                     parseColorMappings(mappings, overrideColors);
                 }
             } catch (JsonSyntaxException e) {
-                ColoredLights.LOGGER.error("Failed to parse colored light mappings at {}", resource.getId(), e);
+                ColoredLights.LOGGER.error("Failed to parse colored light mappings in {}", resource.getPack().getName(), e);
             }
         }
 
@@ -85,7 +85,7 @@ public final class BlockLightColorLoader implements SimpleResourceReloadListener
         }
     }
 
-    private static Vec3f parseColor(String string) {
+    private static Vector3f parseColor(String string) {
         if (!string.startsWith("#")) {
             throw new JsonSyntaxException("Invalid color! Expected hex string in format #ffffff");
         }
@@ -95,7 +95,7 @@ public final class BlockLightColorLoader implements SimpleResourceReloadListener
             int red = (color >> 16) & 0xFF;
             int green = (color >> 8) & 0xFF;
             int blue = color & 0xFF;
-            return new Vec3f(red / 255.0F, green / 255.0F, blue / 255.0F);
+            return new Vector3f(red / 255.0F, green / 255.0F, blue / 255.0F);
         } catch (NumberFormatException e) {
             throw new JsonSyntaxException("Malformed hex string", e);
         }

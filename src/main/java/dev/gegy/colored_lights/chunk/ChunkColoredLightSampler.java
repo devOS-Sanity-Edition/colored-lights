@@ -97,7 +97,7 @@ public final class ChunkColoredLightSampler {
                         mutablePos.set(minPos, x, y, z);
 
                         var color = BlockLightColors.lookup(world, mutablePos, state);
-                        addLightSourceSamples(samples, x, y, z, luminance, color.getX(), color.getY(), color.getZ());
+                        addLightSourceSamples(samples, x, y, z, luminance, color.x(), color.y(), color.z());
                     }
                 }
             }

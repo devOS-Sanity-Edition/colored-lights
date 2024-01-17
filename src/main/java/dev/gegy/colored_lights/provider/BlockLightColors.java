@@ -2,14 +2,14 @@ package dev.gegy.colored_lights.provider;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.WorldView;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class BlockLightColors {
-    public static final Vec3f WHITE = new Vec3f(1.0F, 1.0F, 1.0F);
+    public static final Vector3f WHITE = new Vector3f(1.0F, 1.0F, 1.0F);
 
     private static final List<BlockLightColorProvider> providers = new ArrayList<>();
     private static Lookup lookup = (world, pos, state) -> WHITE;
@@ -24,7 +24,7 @@ public final class BlockLightColors {
         BlockLightColors.lookup = Lookup.build(providers);
     }
 
-    public static Vec3f lookup(WorldView world, BlockPos pos, BlockState state) {
+    public static Vector3f lookup(WorldView world, BlockPos pos, BlockState state) {
         return BlockLightColors.lookup.get(world, pos, state);
     }
 
@@ -37,12 +37,12 @@ public final class BlockLightColors {
             }
         }
 
-        Vec3f get(WorldView world, BlockPos pos, BlockState state);
+        Vector3f get(WorldView world, BlockPos pos, BlockState state);
     }
 
     private record SingleProviderLookup(BlockLightColorProvider provider) implements Lookup {
         @Override
-        public Vec3f get(WorldView world, BlockPos pos, BlockState state) {
+        public Vector3f get(WorldView world, BlockPos pos, BlockState state) {
             var color = this.provider.get(world, pos, state);
             return color != null ? color : WHITE;
         }
@@ -50,7 +50,7 @@ public final class BlockLightColors {
 
     private record CompositeProviderLookup(BlockLightColorProvider[] providers) implements Lookup {
         @Override
-        public Vec3f get(WorldView world, BlockPos pos, BlockState state) {
+        public Vector3f get(WorldView world, BlockPos pos, BlockState state) {
             for (var provider : this.providers) {
                 var color = provider.get(world, pos, state);
                 if (color != null) {

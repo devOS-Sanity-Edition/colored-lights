@@ -1,8 +1,8 @@
 package dev.gegy.colored_lights.resource.shader;
 
-import net.minecraft.client.gl.GlShader;
 import net.minecraft.client.gl.GlUniform;
-import net.minecraft.client.render.Shader;
+import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramSetupView;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -35,14 +35,14 @@ public final class PatchedUniform {
     }
 
     @Nullable
-    public GlUniform get(Shader shader) {
+    public GlUniform get(ShaderProgram shader) {
         if (shader instanceof PatchedShader patchedShader) {
             return patchedShader.getPatchedUniform(this);
         }
         return null;
     }
 
-    public GlUniform toGlUniform(GlShader shader) {
+    public GlUniform toGlUniform(ShaderProgramSetupView shader) {
         var uniform = new GlUniform(this.name, this.type.glType, this.type.count, shader);
         this.reset.accept(uniform);
         return uniform;

@@ -1,9 +1,9 @@
 package dev.gegy.colored_lights.resource.shader;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.client.gl.GlShader;
 import net.minecraft.client.gl.GlUniform;
-import net.minecraft.client.gl.Program;
+import net.minecraft.client.gl.ShaderProgramSetupView;
+import net.minecraft.client.gl.ShaderStage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,14 +27,14 @@ public final class ShaderPatch {
         return new Builder();
     }
 
-    public void addUniforms(GlShader shader, BiConsumer<PatchedUniform, GlUniform> consumer) {
+    public void addUniforms(ShaderProgramSetupView shader, BiConsumer<PatchedUniform, GlUniform> consumer) {
         for (var uniform : this.uniforms) {
             consumer.accept(uniform, uniform.toGlUniform(shader));
         }
     }
 
-    public String applyToSource(String source, Program.Type type) {
-        var patcher = type == Program.Type.VERTEX ? this.vertex : this.fragment;
+    public String applyToSource(String source, ShaderStage.Type type) {
+        var patcher = type == ShaderStage.Type.VERTEX ? this.vertex : this.fragment;
         return patcher.apply(source);
     }
 

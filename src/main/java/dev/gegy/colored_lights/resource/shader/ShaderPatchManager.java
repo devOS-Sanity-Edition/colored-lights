@@ -3,9 +3,9 @@ package dev.gegy.colored_lights.resource.shader;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import dev.gegy.colored_lights.resource.ResourcePatchManager;
-import net.minecraft.client.gl.GlShader;
 import net.minecraft.client.gl.GlUniform;
-import net.minecraft.client.gl.Program;
+import net.minecraft.client.gl.ShaderProgramSetupView;
+import net.minecraft.client.gl.ShaderStage;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,11 +26,11 @@ public final class ShaderPatchManager {
     public void add(String shader, ShaderPatch patch) {
         this.patches.put(shader, patch);
 
-        this.addResourcePatch(shader, patch, Program.Type.VERTEX);
-        this.addResourcePatch(shader, patch, Program.Type.FRAGMENT);
+        this.addResourcePatch(shader, patch, ShaderStage.Type.VERTEX);
+        this.addResourcePatch(shader, patch, ShaderStage.Type.FRAGMENT);
     }
 
-    private void addResourcePatch(String shader, ShaderPatch patch, Program.Type type) {
+    private void addResourcePatch(String shader, ShaderPatch patch, ShaderStage.Type type) {
         var location = new Identifier("shaders/core/" + shader + type.getFileExtension());
 
         ResourcePatchManager.INSTANCE.add(location, bytes -> {
@@ -49,7 +49,7 @@ public final class ShaderPatchManager {
         INSTANCE.activePatches.remove();
     }
 
-    public static void applyUniformPatches(GlShader shader, BiConsumer<PatchedUniform, GlUniform> consumer) {
+    public static void applyUniformPatches(ShaderProgramSetupView shader, BiConsumer<PatchedUniform, GlUniform> consumer) {
         var activePatches = getActivePatches();
         if (activePatches != null) {
             for (ShaderPatch patch : activePatches) {
